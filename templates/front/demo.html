@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employees Data | Django CRUD</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: #333;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      background: #fff;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2575fc;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      border-bottom: 2px solid #eee;
+      margin-bottom: 25px;
+    }
+
+    .tab {
+      padding: 12px 25px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #555;
+      transition: 0.3s;
+    }
+
+    .tab:hover, .tab.active {
+      color: #2575fc;
+      border-bottom: 3px solid #2575fc;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Form Styling */
+    form p {
+      margin-bottom: 18px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #2575fc;
+      box-shadow: 0 0 5px rgba(37,117,252,0.3);
+    }
+
+    button {
+      padding: 12px 20px;
+      background: linear-gradient(90deg, #6a11cb, #2575fc);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #2575fc, #6a11cb);
+      transform: scale(1.03);
+    }
+
+    /* Table Styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #2575fc;
+      color: white;
+      text-transform: uppercase;
+    }
+
+    tr:hover {
+      background-color: #f8f9ff;
+    }
+
+    .delete-link {
+      color: #e63946;
+      font-weight: 500;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .delete-link:hover {
+      color: #b71c1c;
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      table {
+        font-size: 14px;
+      }
+      .tab {
+        padding: 10px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Employees Data</h1>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="openTab(event, 'create')">Create</div>
+      <div class="tab" onclick="openTab(event, 'read')">Read</div>
+      <div class="tab" onclick="openTab(event, 'update')">Update</div>
+      <div class="tab" onclick="openTab(event, 'delete')">Delete</div>
+    </div>
+
+    <!-- Create Tab -->
+    <div id="create" class="tab-content active">
+      <h2>Add New Employee</h2>
+      <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <!-- Read Tab -->
+    <div id="read" class="tab-content">
+      <h2>Employee List</h2>
+      <table>
+        <tr>
+          <th>EID</th>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Email</th>
+          <th>Salary</th>
+          <th>Hire Date</th>
+        </tr>
+        {% for emp in data %}
+        <tr>
+          <td>{{ emp.eid }}</td>
+          <td>{{ emp.name }}</td>
+          <td>{{ emp.position }}</td>
+          <td>{{ emp.email }}</td>
+          <td>{{ emp.salary }}</td>
+          <td>{{ emp.hire_date }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <!-- Update Tab -->
+    <div id="update" class="tab-content">
+      <h2>Update Employee (Work in Progress)</h2>
+      <p>Later, you can add a search or edit form here to modify employee details.</p>
+    </div>
+
+    <!-- Delete Tab -->
+    <div id="delete" class="tab-content">
+      <h2>Delete Employee</h2>
+      <table>
+        <tr>
+          <th>EID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Action</th>
+        </tr>
+        {% for emp in data %}
+        <tr>
+          <td>{{ emp.eid }}</td>
+          <td>{{ emp.name }}</td>
+          <td>{{ emp.email }}</td>
+          <td><a href="" class="delete-link">Delete</a></td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    function openTab(evt, tabName) {
+      let i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove("active");
+      }
+      tablinks = document.getElementsByClassName("tab");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+      }
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Employee | Django CRUD</title>
+
+     Google Fonts -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            padding: 20px;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 40px 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        form p {
+            margin-bottom: 18px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #2575fc;
+            box-shadow: 0 0 5px rgba(37, 117, 252, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #2575fc, #6a11cb);
+            transform: scale(1.03);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #2575fc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: #6a11cb;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Employee Registration</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+
+        <a href="{% url 'home1' %}" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html> -->
