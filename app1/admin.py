@@ -6,4 +6,4 @@ from app1.models import Employee
 class EmployeeAdmin(admin.ModelAdmin):
     list_display= ['eid', 'name', 'position', 'email', 'salary', 'hire_date']
 
-admin.site.register(Employee, EmployeeAdmin)
+admin.site.register(Employee, EmployeeAdmin)    
