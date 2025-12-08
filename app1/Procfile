@@ -1,1 +1,1 @@
-web: gunicorn School.wsgi
+web: gunicorn bd_crud.wsgi
