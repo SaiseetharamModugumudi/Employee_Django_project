@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete</title>
+    <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #6a11cb, #2575fc); min-height: 100vh; padding: 40px 20px; }
+    .container {
+      max-width: 1100px; margin: auto; background: #fff; border-radius: 15px;
+      padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    h1 { text-align: center; color: #2575fc; margin-bottom: 25px; font-weight: 700; }
+    .tabs { display: flex; justify-content: center; border-bottom: 2px solid #eee; margin-bottom: 25px; }
+    .tab {
+      padding: 12px 25px; cursor: pointer; font-weight: 500; color: #555; transition: 0.3s;
+    }
+    .tab:hover, .tab.active { color: #2575fc; border-bottom: 3px solid #2575fc; }
+    .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+    .tab-content.active { display: block; }
+
+    form p { margin-bottom: 18px; }
+    input, select, textarea {
+      width: 100%; padding: 10px; margin-top: 6px; border-radius: 8px;
+      border: 1px solid #ccc; outline: none; transition: all 0.3s ease;
+    }
+    input:focus { border-color: #2575fc; box-shadow: 0 0 5px rgba(37,117,252,0.3); }
+    button {
+      padding: 12px 20px; background: linear-gradient(90deg, #6a11cb, #2575fc);
+      color: white; border: none; border-radius: 8px; cursor: pointer;
+      transition: 0.3s; font-weight: 500;
+    }
+    button:hover { background: linear-gradient(90deg, #2575fc, #6a11cb); transform: scale(1.03); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background-color: #2575fc; color: white; text-transform: uppercase; }
+    tr:hover { background-color: #f8f9ff; }
+    a.action-link { text-decoration: none; padding: 6px 12px; border-radius: 6px; color: white; font-size: 14px; }
+    a.edit { background-color: #00b894; }
+    a.delete { background-color: #d63031; }
+    a.edit:hover { background-color: #019875; }
+    a.delete:hover { background-color: #b71c1c; }
+
+    @keyframes fadeIn { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
+    @media (max-width: 768px) { table { font-size: 14px; } th, td { padding: 10px; } }
+  </style>
+</head>
+<body>
+    <h2>Delete Employee</h2>
+      <table>
+        <tr><th>ID</th><th>Name</th><th>Email</th><th>Action</th></tr>
+        {% for emp in data %}
+        <tr>
+          <td>{{ emp.eid }}</td>
+          <td>{{ emp.name }}</td>
+          <td>{{ emp.email }}</td>
+          <td><a href="{% url 'delete_employee' emp.id %}" class="action-link delete">Delete</a></td>
+        </tr>
+        {% endfor %}
+      </table>
+      <button><a href="login123">Login</a></button>
+</body>
+</html>
