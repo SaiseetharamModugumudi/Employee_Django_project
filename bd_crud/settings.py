@@ -75,7 +75,11 @@ TEMPLATES = [
     },
 ]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 WSGI_APPLICATION = 'bd_crud.wsgi.application'
+
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 
 # Database
@@ -86,40 +90,20 @@ import os
 # On Render we expect database credentials to be provided via environment variables.
 # Use safe defaults (empty strings) so Django's backend checks don't raise when a
 # variable is missing. If required env vars are not set, fall back to SQLite.
-if os.environ.get("RENDER"):
-    mysql_name = os.environ.get("MYSQLDATABASE", "")
-    mysql_user = os.environ.get("MYSQLUSER", "")
-    mysql_password = os.environ.get("MYSQLPASSWORD", "")
-    mysql_host = os.environ.get("MYSQLHOST", "")
-    mysql_port = os.environ.get("MYSQLPORT", "3306")
 
-    if mysql_name and mysql_user and mysql_host:
-        DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.mysql",
-                "NAME": mysql_name,
-                "USER": mysql_user,
-                "PASSWORD": mysql_password,
-                "HOST": mysql_host,
-                "PORT": mysql_port,
-            }
-        }
-    else:
-        # Missing MySQL config — fallback to sqlite so app can still start.
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
-else:
-    # Local development default
+import os
+if os.environ.get("RENDER"):
+# Production (Render + Railway MySQL)
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+        "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("MYSQLDATABASE"),
+        "USER": os.environ.get("MYSQLUSER"),
+        "PASSWORD": os.environ.get("MYSQLPASSWORD"),
+        "HOST": os.environ.get("MYSQLHOST"),
+        "PORT": os.environ.get("MYSQLPORT", "3306"),
     }
+}
 
 
 # Password validation
@@ -165,3 +149,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.onrender.com"
+]
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
