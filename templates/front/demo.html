@@ -32,9 +32,15 @@
     .messages { margin-bottom: 20px; padding: 10px; background: #e8f5e8; color: #2e7d32; border-radius: 5px; }
     @keyframes fadeIn { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
     @media (max-width: 768px) { table { font-size: 14px; } th, td { padding: 10px; } .tabs { flex-direction: column; } }
+    
   </style>
 </head>
 <body>
+   <!-- Logout Button -->
+    <div style="display: flex; justify-content: flex-end; align-items:end; padding: 10px; background-color: #da1111; border-radius: 8px; margin-bottom: 20px; width: 120px; height: 40px;">
+        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+    </div>
+
   <div class="container">
     <h1>Employees Data</h1>
     {% if messages %}
@@ -57,9 +63,10 @@
     <div id="create" class="tab-content active">
       <h2>Add New Employee</h2>
       <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Employee</button>
+
       </form>
     </div>
 

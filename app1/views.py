@@ -36,22 +36,37 @@ def login_view(request):
 
 
 # 📝 REGISTER (Optional but recommended)
+from django.contrib.auth.models import User
+from django.contrib import messages
+
 def register_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        # Validation
+        if not username:
+            messages.error(request, "Username is required")
+            return render(request, 'front/register.html')
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match")
+            return render(request, 'front/register.html')
 
         if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists')
-            return redirect('register')
+            messages.error(request, "Username already exists")
+            return render(request, 'front/register.html')
 
+        # Create user
         User.objects.create_user(
             username=username,
             email=email,
             password=password
         )
-        messages.success(request, 'Registration successful. Please login.')
+
+        messages.success(request, "Registration successful. Please login.")
         return redirect('login')
 
     return render(request, 'front/register.html')
@@ -60,24 +75,30 @@ def register_view(request):
 # 🔓 LOGOUT
 def logout_view(request):
     logout(request)
-    print("Authenticated:", request.user.is_authenticated)
-    return redirect('login')
+    return redirect('home')
+
 
 
 # 📊 DASHBOARD (Protected)
 @login_required(login_url='login')
 def dashboard(request):
     data = Employee.objects.all()
-    form = Employee_Form(request.POST or None)
+    form = Employee_Form()
 
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        return redirect('dashboard')
+    if request.method == 'POST':
+        form = Employee_Form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+        else:
+            print(form.errors)  # DEBUG
 
     return render(request, 'front/demo.html', {
         'data': data,
-        'form': form
+        'form': form,
     })
+
+
 
 
 # ✏ UPDATE
