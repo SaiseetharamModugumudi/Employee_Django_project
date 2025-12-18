@@ -34,6 +34,7 @@ def login_view(request):
 
 
 
+
 # 📝 REGISTER (Optional but recommended)
 def register_view(request):
     if request.method == 'POST':
