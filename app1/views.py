@@ -6,13 +6,11 @@ from django.contrib import messages
 from app1.forms import Employee_Form
 from app1.models import Employee
 
-
-# ---------------- HOME ----------------
 def home(request):
     return render(request, 'front/home.html')
 
 
-# ---------------- MANUAL LOGIN ----------------
+# 🔐 LOGIN
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -21,11 +19,10 @@ def login_view(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        # Manual validation
-        user = authenticate(request, username='admin', password='admin123')
+        user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            login(request, user)   # create session
+        if user:
+            login(request, user)
             return redirect('dashboard')
         else:
             messages.error(request, "Invalid username or password")
@@ -33,13 +30,13 @@ def login_view(request):
     return render(request, 'front/login.html')
 
 
-# ---------------- LOGOUT ----------------
+# 🔓 LOGOUT
 def logout_view(request):
     logout(request)
-    return redirect('home')
+    return redirect('login')
 
 
-# ---------------- DASHBOARD ----------------
+# 📊 DASHBOARD + CREATE + READ
 @login_required
 def dashboard(request):
     data = Employee.objects.all()
@@ -51,11 +48,12 @@ def dashboard(request):
 
     return render(request, 'front/demo.html', {
         'data': data,
-        'form': form,
+        'form': form
     })
 
 
-# ---------------- UPDATE ----------------
+
+# ✏ UPDATE
 @login_required
 def update_employee(request, id):
     employee = get_object_or_404(Employee, id=id)
@@ -63,17 +61,16 @@ def update_employee(request, id):
 
     if request.method == 'POST' and form.is_valid():
         form.save()
+        messages.success(request, 'Employee updated successfully')
         return redirect('dashboard')
 
-    return render(request, 'front/update.html', {
-        'form': form,
-        'employee': employee
-    })
+    return render(request, 'front/update.html', {'form': form})
 
 
-# ---------------- DELETE ----------------
+# ❌ DELETE
 @login_required
 def delete_employee(request, id):
     employee = get_object_or_404(Employee, id=id)
     employee.delete()
+    messages.success(request, 'Employee deleted successfully')
     return redirect('dashboard')
