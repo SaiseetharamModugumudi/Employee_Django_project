@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    div {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        text-align: center;
+    }
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    input {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+    button {
+        padding: 10px;
+        background: #11998e;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    button:hover {
+        background: #38ef7d;
+    }
+    a {
+        display: block;
+        margin-top: 15px;
+        color: #11998e;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    
+</style>
+</head>
+<body>
+    <div>
+        <h2>Register</h2>
+
+<form method="POST">
+  {% csrf_token %}
+  Username: <input type="text" name="username"><br><br>
+  Email: <input type="email" name="email"><br><br>
+  Password: <input type="password" name="password"><br><br>
+  <button type="submit">Register</button>
+</form>
+
+<a href="{% url 'login' %}">Already have account?</a>
+
+    </div>
+</body>
+</html>
