@@ -83,11 +83,17 @@ import os
 # variable is missing. If required env vars are not set, fall back to SQLite.
 
 if os.environ.get("RENDER"):
-    mysql_name = os.environ.get("MYSQLDATABASE", "")
-    mysql_user = os.environ.get("MYSQLUSER", "")
-    mysql_password = os.environ.get("MYSQLPASSWORD", "")
-    mysql_host = os.environ.get("MYSQLHOST", "")
-    mysql_port = os.environ.get("MYSQLPORT", "3306")
+# Production (Render + Railway MySQL)
+    DATABASES = {
+    "default": {
+    "ENGINE": "django.db.backends.mysql",
+    "NAME": os.environ.get("MYSQLDATABASE"),
+    "USER": os.environ.get("MYSQLUSER"),
+    "PASSWORD": os.environ.get("MYSQLPASSWORD"),
+    "HOST": os.environ.get("MYSQLHOST"),
+    "PORT": os.environ.get("MYSQLPORT", "3306"),
+    }
+}
 
 else:
     # Local development default
