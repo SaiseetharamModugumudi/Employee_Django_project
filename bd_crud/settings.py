@@ -81,6 +81,7 @@ import os
 # On Render we expect database credentials to be provided via environment variables.
 # Use safe defaults (empty strings) so Django's backend checks don't raise when a
 # variable is missing. If required env vars are not set, fall back to SQLite.
+
 if os.environ.get("RENDER"):
     mysql_name = os.environ.get("MYSQLDATABASE", "")
     mysql_user = os.environ.get("MYSQLUSER", "")
@@ -88,25 +89,6 @@ if os.environ.get("RENDER"):
     mysql_host = os.environ.get("MYSQLHOST", "")
     mysql_port = os.environ.get("MYSQLPORT", "3306")
 
-    if mysql_name and mysql_user and mysql_host:
-        DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.mysql",
-                "NAME": mysql_name,
-                "USER": mysql_user,
-                "PASSWORD": mysql_password,
-                "HOST": mysql_host,
-                "PORT": mysql_port,
-            }
-        }
-    else:
-        # Missing MySQL config — fallback to sqlite so app can still start.
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
 else:
     # Local development default
     DATABASES = {
